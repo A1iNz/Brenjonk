@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Program A2</title>
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<style>
+        :root {
+            --bg-dark: #1A1A1A;
+            --bg-light-dark: #2A2A2A;
+            --text-light: #F5F5F5;
+            --text-medium: #AAAAAA;
+            --accent-green: #30E0A0;
+            --border-color: #3A3A3A;
+            --border-radius-modern: 16px;
+            --transition: all 0.3s ease-in-out;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-medium);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+        .login-card {
+            background-color: var(--bg-light-dark);
+            padding: 40px;
+            border-radius: var(--border-radius-modern);
+            border: 1px solid var(--border-color);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        .login-card h2 {
+            color: var(--text-light);
+            font-size: 2rem;
+            margin-bottom: 30px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+            position: relative;
+        }
+
+        /* === INI BAGIAN YANG DIPERBAIKI === */
+        .form-group label {
+            display: block;
+            font-size: 0.9em;
+            margin-bottom: 4px;
+           
+        }
+        /* ================================== */
+        
+.form-group .icon {
+    position: absolute;
+    left: 15px; 
+    top: 55px; /* <-- UBAH MENJADI 47px */
+    transform: translateY(-50%);
+    color: var(--text-medium);
+}
+        
+        .form-group input {
+            width: 100%;
+            height: 50px; 
+            padding: 0 14px 0 45px; /* Padding kiri 45px memberi ruang untuk ikon */
+            background-color: var(--bg-dark);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            color: var(--text-light);
+            font-size: 1rem;
+            transition: var(--transition);
+            font-family: 'Inter', sans-serif; 
+        }
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--accent-green);
+            box-shadow: 0 0 10px rgba(48, 224, 160, 0.2);
+        }
+        .btn {
+            display: inline-flex; 
+            align-items: center; 
+            justify-content: center; 
+            width: 100%;
+            height: 50px; 
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 1rem;
+            border: none;
+        }
+        .btn-primary {
+            background-color: var(--accent-green);
+            color: #1A1A1A;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 15px rgba(48, 224, 160, 0.4);
+        }
+        .btn-primary:disabled {
+            background-color: #555;
+            cursor: not-allowed;
+        }
+        .links {
+            margin-top: 20px;
+            font-size: 0.9em;
+        }
+        .links a {
+            color: var(--accent-green);
+            text-decoration: none;
+        }
+        .back-link {
+            display: inline-block;
+            margin-top: 25px;
+            font-size: 0.9em;
+            color: var(--text-medium);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+        .back-link:hover {
+            color: var(--text-light);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="login-card">
+        <h2>Login Akun</h2>
+        
+        <form id="loginForm" method="POST">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <i class="fas fa-user icon"></i>
+                <input type="text" id="username" name="username" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <i class="fas fa-lock icon"></i>
+                <input type="password" id="password" name="password" required>
+            </div>
+            
+            <button type="submit" class="btn btn-primary" id="submitButton">
+                Login
+            </button>
+        </form>
+
+        <div class="links">
+            Belum punya akun? <a href="register.html">Daftar di sini</a>
+        </div>
+        <a href="index.php" class="back-link">
+            <i class="fas fa-arrow-left"></i> Kembali ke Beranda
+        </a>
+    </div>
+
+<script>
+    // (Asumsi Anda menggunakan SweetAlert, jika tidak, ganti Swal.fire dengan alert())
+    const loginForm = document.getElementById('loginForm'); // Asumsi ID form Anda 'loginForm'
+    const submitButton = document.getElementById('submitButton'); // Asumsi ID tombol 'submitButton'
+
+    loginForm.addEventListener('submit', function(event) {
+        event.preventDefault(); 
+        
+        const formData = new FormData(this);
+        submitButton.disabled = true;
+        submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Memverifikasi...';
+
+        fetch('proses_login.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => {
+             if (!response.ok) {
+                throw new Error('Respon server tidak valid.');
+             }
+             return response.json();
+        }) 
+        .then(data => {
+            if (data.success) {
+                // BERHASIL!
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Login Berhasil!',
+                    text: 'Anda akan diarahkan...',
+                    timer: 1500,
+                    showConfirmButton: false
+                }).then(() => {
+                    // === INI PERBAIKAN UTAMANYA ===
+                    // Langsung arahkan ke URL yang diberikan oleh PHP
+                    
+                    if (data.redirect_url) {
+                        window.location.href = data.redirect_url;
+                    } else {
+                        // Ini sebagai pengaman jika PHP tidak kirim URL
+                         Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'URL redirect tidak ditemukan.'
+                        });
+                    }
+                    // === AKHIR PERBAIKAN ===
+                });
+            } else {
+                // GAGAL! (Username/password salah)
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Login Gagal',
+                    text: data.message // 'data.message' dari PHP
+                });
+            }
+        })
+        .catch(error => {
+            // Ini untuk error jika PHP crash total
+            console.error('Error:', error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Terjadi Kesalahan',
+                text: 'Gagal terhubung ke server. Coba lagi nanti.'
+            });
+        })
+        .finally(() => {
+            // Apapun hasilnya, aktifkan lagi tombolnya
+            submitButton.disabled = false;
+            submitButton.innerHTML = 'Login'; // Kembalikan ke teks asli
+        });
+    });
+</script>
+
+</body>
+</html>

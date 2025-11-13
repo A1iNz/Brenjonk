@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daftar Akun - Program A2</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        /* ... (Semua CSS Anda tetap sama persis) ... */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        :root {
+            --bg-dark: #1A1A1A;
+            --bg-light-dark: #2A2A2A;
+            --text-light: #F5F5F5;
+            --text-medium: #AAAAAA;
+            --accent-green: #30E0A0;
+            --border-color: #3A3A3A;
+            --border-radius-modern: 16px;
+            --transition: all 0.3s ease-in-out;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-medium);
+            display: grid;
+            place-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .btn {
+            display: inline-block;
+            padding: 12px 30px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            border: 2px solid transparent;
+            font-size: 1rem;
+            width: 100%;
+            margin-top: 10px;
+        }
+        .btn-primary {
+            background-color: var(--accent-green);
+            color: #1A1A1A;
+        }
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 0 20px rgba(48, 224, 160, 0.4);
+        }
+        .login-container { width: 100%; max-width: 400px; position: relative; }
+        .login-box {
+            background-color: var(--bg-light-dark);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-modern);
+            padding: 40px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            text-align: center;
+        }
+        .login-icon {
+            font-size: 3rem;
+            color: var(--accent-green);
+            margin-bottom: 20px;
+        }
+        .login-box h2 {
+            color: var(--text-light);
+            font-weight: 700;
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+        .login-form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .input-group { position: relative; text-align: left; }
+        .input-group label {
+            display: block;
+            font-size: 0.9em;
+            font-weight: 500;
+            color: var(--text-medium);
+            margin-bottom: 8px;
+        }
+        .input-group i {
+            position: absolute;
+            left: 15px;
+            top: 48px; 
+            color: var(--text-medium);
+        }
+        .input-group input {
+            width: 100%;
+            padding: 14px 14px 14px 45px;
+            background-color: var(--bg-dark);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            color: var(--text-light);
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+        .input-group input:focus {
+            outline: none;
+            border-color: var(--accent-green);
+            box-shadow: 0 0 10px rgba(48, 224, 160, 0.2);
+        }
+        .back-link {
+            display: inline-block;
+            margin-top: 20px;
+            color: var(--text-medium);
+            text-decoration: none;
+            font-size: 0.9em;
+            transition: var(--transition);
+        }
+        .back-link i { margin-right: 5px; }
+        .back-link:hover { color: var(--text-light); }
+    </style>
+</head>
+<body>
+
+    <div class="login-container">
+        
+        <div class="login-box">
+            <i class="fas fa-user-plus login-icon"></i>
+            <h2>Buat Akun Baru</h2>
+            
+            <form class="login-form" id="register-form">
+                
+                <div class="input-group">
+                    <label for="username">Username</label>
+                    <i class="fas fa-user"></i>
+                    <input type="text" id="username" name="username" placeholder="Buat username unik" required>
+                </div>
+                
+                <div class="input-group">
+                    <label for="password">Password</label>
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="password" name="password" placeholder="Buat password" required>
+                </div>
+
+                <div class="input-group">
+                    <label for="confirm_password">Konfirmasi Password</label>
+                    <i class="fas fa-check-double"></i>
+                    <input type="password" id="confirm_password" name="confirm_password" placeholder="Ulangi password" required>
+                </div>
+                
+                <button type="submit" class="btn btn-primary">Daftar</button>
+            </form>
+        </div>
+        
+        <a href="login.html" class="back-link">
+            <i class="fas fa-arrow-left"></i> Sudah punya akun? Login
+        </a>
+
+    </div>
+
+    <script>
+        // 1. Pilih form registrasi
+        const registerForm = document.getElementById('register-form');
+
+        registerForm.addEventListener('submit', function(event) {
+            // 2. Hentikan pengiriman form standar
+            event.preventDefault();
+
+            // 3. Ambil data password untuk konfirmasi
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirm_password').value;
+
+            // 4. Validasi Sederhana: Cek apakah password cocok
+            if (password !== confirmPassword) {
+                alert('Konfirmasi password tidak cocok! Silakan periksa kembali.');
+                return; // Hentikan fungsi jika tidak cocok
+            }
+
+            // Jika password cocok, lanjutkan proses
+            const formData = new FormData(this);
+            const submitButton = this.querySelector('button[type="submit"]');
+
+            submitButton.disabled = true;
+            submitButton.innerHTML = 'Mendaftar...';
+
+            // 5. Kirim data ke proses_register.php menggunakan fetch
+            fetch('proses_register.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json()) // 6. Ubah balasan server menjadi JSON
+            .then(data => {
+                // 7. Cek balasan 'success' dari PHP
+                if (data.success) {
+                    // **INI YANG ANDA INGINKAN**
+                    // 7a. Tampilkan popup berhasil
+                    alert('Registrasi berhasil! Anda akan diarahkan ke halaman login.');
+                    
+                    // 7b. Arahkan ke halaman login
+                    window.location.href = 'login.html';
+                } else {
+                    // 8. Tampilkan pesan error dari server (mis: username sudah ada)
+                    alert('Registrasi Gagal: ' + data.message);
+                    submitButton.disabled = false;
+                    submitButton.innerHTML = 'Daftar';
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Terjadi kesalahan koneksi. Silakan coba lagi.');
+                submitButton.disabled = false;
+                submitButton.innerHTML = 'Daftar';
+            });
+        });
+    </script>
+
+</body>
+</html>
