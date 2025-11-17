@@ -42,9 +42,10 @@
             </div>
         </header>
         <div class="d-flex">
-            @if (auth()->user()->role == 'admin')
-                <div class="d-flex flex-column flex-shrink-0 p-2 bg-dark text-light" style="width: 200px; height: 91vh;">
-                    <ul class="nav nav-pills flex-column mb-auto fs-8">
+            @if (auth()->user() && auth()->user()->role == 'admin')
+                <!-- Sidebar Admin -->
+                <div class="d-flex flex-column flex-shrink-0 p-3 bg-dark text-light" style="width: 250px; min-height: 91vh;">
+                    <ul class="nav nav-pills flex-column mb-auto">
                         <li class="nav-item">
                             <a href="{{ route('dashboard') }}" class="nav-link mt-3 text-white {{ request()->routeIs('dashboard') ? 'active' : '' }}" aria-current="page"><i class="fa-solid fa-house me-2"></i>Dashboard</a>
                         </li>
@@ -57,7 +58,7 @@
                         <li class="nav-item">
                             <a href="{{ route('stok') }}" class="nav-link mt-3 text-white {{ request()->routeIs('stok') ? 'active' : '' }}" aria-current="page"><i class="fa-solid fa-boxes-stacked me-2"></i>Stok Siap jual</a>
                         </li>
-                        <hr class="divider mt-3"></hr>
+                        <hr class="divider mt-3">
                         <li class="nav-item">
                             <a href="{{ route('produk') }}" class="nav-link mt-3 text-white {{ request()->routeIs('produk') ? 'active' : '' }}" aria-current="page"><i class="fa-solid fa-book-open me-2"></i>Produk</a>
                         </li>
@@ -67,118 +68,8 @@
                     </ul>
                 </div>
             @endif
-
-            <!-- Page Content -->
-            <main class="flex-grow-1">
-                @if (auth()->user()->role == 'petani')
-                    <div class="container w-75 mt-5">
-                        <div class="row ">
-                            {{-- DIUBAH: Menggunakan d-flex untuk menyejajarkan ikon dan teks --}}
-                            <div class="col card mx-3 p-4 bg-dark text-light d-flex flex-row align-items-center">
-                                <i class="fa-solid fa-box-open fa-xl text-success"></i>
-                                <div class="ms-4">
-                                    <h3>Produk Terdaftar</h3>
-                                    <p class="">1</p>
-                                </div>
-                            </div>
-                            {{-- DIUBAH: Menggunakan d-flex untuk menyejajarkan ikon dan teks --}}
-                            <div class="col card mx-3 p-4 bg-dark text-light d-flex flex-row align-items-center">
-                                <i class="fa-solid fa-hourglass-half fa-xl text-success"></i>
-                                <div class="ms-4">
-                                    <h3>Menunggu Verifikasi</h3>
-                                    <p class="">0</p>
-                                </div>
-                            </div>
-                            {{-- DIUBAH: Menggunakan d-flex untuk menyejajarkan ikon dan teks --}}
-                            <div class="col card mx-3 p-4 bg-dark text-light d-flex flex-row align-items-center">
-                                <i class="fa-solid fa-check-circle fa-xl text-success"></i>
-                                <div class="ms-4">
-                                    <h3>Produk Disetujui</h3>
-                                    <p class="">0</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row my-3">
-                            {{-- DIUBAH: Menggunakan d-flex untuk menyejajarkan ikon dan teks --}}
-                            <div class="col card mx-3 p-4 bg-dark text-light d-flex flex-row ">
-                                <i class="fa-solid fa-circle-plus text-secondary fa-xl mt-2"></i>
-                                <div class="ms-4">
-                                    <h3>Lapor Rencana Panen</h3>
-                                    <br>
-                                    <div>
-                                        <form>
-                                            <div class="form-group">
-                                                <div class="row mb-3">
-                                                    <label class="col-sm-6 col-form-label">Nama Produk</label>
-                                                    <div class="col-sm-12">
-                                                        <select class="form-select" aria-label="Default select example">
-                                                            <option selected>Pilih Nama Produk</option>
-                                                            <option value="Tomat">Tomat</option>
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                                <div class="row mb-3">
-                                                    <label class="col-sm-6 col-form-label">Estimasi Hasil Panen</label>
-                                                    <div class=" col-sm-12 ">
-                                                        <input type="number" class="input-group rounded-md form-control" id="estimasiPanen" placeholder="Estimasi Panen">
-                                                    </div>
-                                                </div>
-                                                <div class="row mb-3">
-                                                    <label class="col-sm-6 col-form-label">Estimasi Waktu Panen</label>
-                                                    <div class="col-sm-12">
-                                                        <input type="date" class=" rounded-md form-control" id="estimasiPanen" placeholder="Estimasi Panen">
-                                                    </div>
-                                                </div>
-                                                <button type="submit" class="btn btn-primary">Kirim</button>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            {{-- DIUBAH: Menggunakan d-flex untuk menyejajarkan ikon dan teks --}}
-                            <div class="col card p-4 bg-dark text-light d-flex flex-row ">
-                                <div class="row">
-                                    <div class="col ">
-                                        <i class="col-md-1 fa-solid fa-list-check fa-xl text-secondary mt-2"></i>
-                                    </div>
-                                    <div class="col mt-1 col-md-10">
-                                        <h3>Riwayat Lapor Panen</h3>
-                                    </div>
-                                    <table class="col display table" id="tabelPanen">
-                                        <thead>
-                                            <tr class="text-center">
-                                                <th>No.</th>
-                                                <th>Nama</th>
-                                                <th>Hasil Panen</th>
-                                                <th>Waktu Panen</th>
-                                                <th>Action</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr class="text-center">
-                                                <td>1</td>
-                                                <td>Tomat</td>
-                                                <td>20 Kg</td>
-                                                <td>15/11/2025</td>
-                                                <td>
-                                                    <div>
-                                                        <button class="btn btn-warning"><i class="fa-solid fa-pen-to-square"></i></button>
-                                                        <button class="btn btn-danger"><i class="fa-solid fa-trash"></i></button>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                @elseif (auth()->user()->role != 'admin' && auth()->user()->role != 'petani')
-                    <div class="p-3 bg-dark text-light">
-                        {{ __("You're logged in!") }}
-                    </div>
-                @endif
+            <!-- Main Content -->
+            <main class="flex-grow-1 p-4 bg-black">
                 @yield('content')
             </main>
         </div>
@@ -188,13 +79,9 @@
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"> </script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.min.js" integrity="sha384-G/EV+4j2dNv+tEPo3++6LCgdCROaejBqfUeNjuKAiuXbjrxilcCdDz6ZAVfHWe1Y" crossorigin="anonymous"></script>
 <script src="https://kit.fontawesome.com/680ecce84d.js" crossorigin="anonymous"></script>
-<script>
-    new DataTable('#tabelPanen', {
-        info: false,
-        ordering: false,
-        paging: false
-    });
-</script>
+{{-- Stack untuk menampung skrip dari halaman lain --}}
+
+@stack('scripts')
 </body>
 
 </html>

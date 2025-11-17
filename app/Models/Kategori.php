@@ -4,8 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Produk extends Model
+class Kategori extends Model
 {
     use HasFactory;
 
@@ -15,9 +16,12 @@ class Produk extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        'nama',
-        'kode',
-        'harga',
-        'stock',
+        'nama_kategori',
+        'kode_kategori',
     ];
+
+    public function produks(): HasMany
+    {
+        return $this->hasMany(Produk::class);
+    }
 }

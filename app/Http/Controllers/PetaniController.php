@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 class PetaniController extends Controller
 {
@@ -35,8 +36,8 @@ class PetaniController extends Controller
     public function store(Request $request)
     {
         $request->validate([
+            'nama_lngkp' => ['required', 'string', 'max:255'],
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
             'kode' => ['required', 'string', 'max:255', 'unique:'.Petani::class],
         ]);
@@ -45,8 +46,8 @@ class PetaniController extends Controller
         try {
             // 1. Buat data user baru
             $user = User::create([
+                'nama_lngkp' => $request->nama_lngkp,
                 'name' => $request->name,
-                'email' => $request->email,
                 'password' => Hash::make($request->password),
                 'role' => 'petani', // Langsung set role sebagai 'petani'
             ]);
@@ -68,6 +69,71 @@ class PetaniController extends Controller
 
             // Tampilkan error
             throw ValidationException::withMessages(['error' => 'Gagal menyimpan data petani. Silakan coba lagi. Pesan Error: ' . $e->getMessage()]);
+        }
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(Petani $petani)
+    {
+        // load relasi user agar bisa diakses di view
+        $petani->load('user');
+        return view('petani.edit', compact('petani'));
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, Petani $petani)
+    {
+        $request->validate([
+            'nama_lngkp' => ['required', 'string', 'max:255', Rule::unique('users')->ignore($petani->user_id)],
+            'name' => ['required', 'string', 'max:255'],
+            'password' => ['nullable', 'confirmed', Rules\Password::defaults()],
+            'kode' => ['required', 'string', 'max:255', Rule::unique('petanis')->ignore($petani->id)],
+        ]);
+
+        DB::beginTransaction();
+        try {
+            // 1. Update data user
+            $user = $petani->user;
+            $user->nama_lngkp = $request->nama_lngkp;
+            $user->name = $request->name;
+            // Hanya update password jika diisi
+            if ($request->filled('password')) {
+                $user->password = Hash::make($request->password);
+            }
+            $user->save();
+
+            // 2. Update data petani
+            $petani->nama = $request->name;
+            $petani->kode = $request->kode;
+            $petani->save();
+
+            DB::commit();
+
+            return redirect()->route('petani')->with('success', 'Data petani berhasil diperbarui.');
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            throw ValidationException::withMessages(['error' => 'Gagal memperbarui data petani. Silakan coba lagi. Pesan Error: ' . $e->getMessage()]);
+        }
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(Petani $petani)
+    {
+        try {
+            // Karena relasi di database menggunakan onDelete('cascade'),
+            // menghapus user akan otomatis menghapus data petani yang terkait.
+            $petani->user()->delete();
+
+            return redirect()->route('petani')->with('success', 'Data petani berhasil dihapus.');
+        } catch (\Exception $e) {
+            return redirect()->route('petani')->with('error', 'Gagal menghapus data petani.');
         }
     }
 }
