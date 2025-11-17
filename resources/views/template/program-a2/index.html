@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Program A2 - Website Pertanian Terintegrasi</title>
+    
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        :root {
+            --bg-dark: #1A1A1A;
+            --bg-light-dark: #2A2A2A;
+            --text-light: #F5F5F5;
+            --text-medium: #AAAAAA;
+            --accent-green: #30E0A0;
+            --accent-red: #E74C3C;
+            --border-color: #3A3A3A;
+            --border-radius-modern: 16px;
+            --transition: all 0.3s ease-in-out;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.7;
+            background-color: var(--bg-dark);
+            color: var(--text-medium);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        h1, h2, h3, h4, h5, h6 { color: var(--text-light); font-weight: 600; }
+        .container { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
+        .content-section { padding: 80px 0; text-align: center; }
+        .content-section h2 { font-size: 2.8rem; margin-bottom: 20px; font-weight: 700; }
+        
+        /* Tombol */
+        .btn {
+            display: inline-block;
+            padding: 12px 30px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            border: 2px solid transparent;
+            font-size: 1rem;
+        }
+        .btn-primary {
+            background-color: var(--accent-green);
+            color: #1A1A1A;
+        }
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 0 20px rgba(48, 224, 160, 0.4);
+        }
+        .btn-secondary {
+            background-color: transparent;
+            color: var(--text-light);
+            border: 2px solid var(--border-color);
+        }
+        .btn-secondary:hover {
+            background-color: var(--accent-green);
+            color: #1A1A1A;
+            border-color: var(--accent-green);
+            transform: translateY(-3px);
+        }
+
+        /* Header / Navigasi */
+        header {
+            background-color: rgba(26, 26, 26, 0.75);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-color);
+            padding: 15px 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+        header nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--text-light);
+            text-decoration: none;
+        }
+        .logo .highlight { color: var(--accent-green); }
+        .nav-links { display: flex; list-style: none; align-items: center; }
+        .nav-links li { margin-left: 30px; }
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-light);
+            font-weight: 500;
+            font-size: 1rem;
+            position: relative;
+            padding-bottom: 5px;
+        }
+        .nav-links a:not(.btn)::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 2px;
+            background: var(--accent-green);
+            transition: var(--transition);
+        }
+        .nav-links a:not(.btn):hover::after { width: 100%; }
+        .nav-links .btn { margin-left: 20px; }
+        .menu-toggle { display: none; font-size: 1.5rem; cursor: pointer; color: var(--text-light); }
+
+        /* Hero Section */
+        .hero {
+            height: 90vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: var(--text-light);
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('https://images.unsplash.com/photo-1560493676-0407186f4c74?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3wzNjAzNTV8MHwxfHNlYXJjaHwzfHxhZ3JpY3VsdHVyZXxlbnwwfHx8fDE3Mjk2ODY3ODF8MA&ixlib.rb-4.0.3&q=80&w=1080') no-repeat center center/cover;
+            margin-top: 74px;
+        }
+        .hero-kicker { font-size: 1rem; font-weight: 600; color: var(--accent-green); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 10px; }
+        .hero-content h1 { font-size: 3.5rem; margin-bottom: 15px; font-weight: 700; color: var(--text-light); }
+        .highlight { color: var(--accent-green); }
+        .hero-content p { font-size: 1.3rem; margin-bottom: 30px; font-weight: 300; color: var(--text-medium); max-width: 600px; margin-left: auto; margin-right: auto; }
+
+        /* Info Grid */
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; text-align: left; margin-top: 40px; }
+        .info-box { background: var(--bg-light-dark); border-radius: var(--border-radius-modern); padding: 30px; border: 1px solid var(--border-color); }
+        .info-box h3 { font-size: 1.5rem; margin-bottom: 10px; }
+        .info-box.problem h3 { color: var(--accent-red); }
+        .info-box.solution h3 { color: var(--accent-green); }
+
+        /* Features Grid */
+        .features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; margin-top: 40px; }
+        .feature-card { background-color: var(--bg-light-dark); padding: 35px; border-radius: var(--border-radius-modern); border: 1px solid var(--border-color); transition: var(--transition); }
+        .feature-card:hover { transform: translateY(-8px); border-color: var(--accent-green); }
+        .feature-card i { font-size: 2.5rem; color: var(--accent-green); margin-bottom: 20px; }
+        .feature-card h3 { font-size: 1.5rem; margin-bottom: 10px; }
+
+        /* Footer */
+        footer { background-color: var(--bg-light-dark); color: var(--text-medium); text-align: center; padding: 30px 0; margin-top: 40px; border-top: 1px solid var(--border-color); }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-links { display: none; flex-direction: column; width: 100%; position: absolute; top: 74px; left: 0; background-color: var(--bg-dark); border-bottom: 1px solid var(--border-color); }
+            .nav-links.active { display: flex; }
+            .nav-links li { margin: 0; width: 100%; }
+            .nav-links a { padding: 15px; text-align: center; display: block; width: 100%; border-bottom: 1px solid var(--border-color); }
+            .nav-links a:not(.btn)::after { display: none; }
+            .nav-links .btn { margin: 15px auto; width: 90%; }
+            .menu-toggle { display: block; }
+            .hero { height: 70vh; }
+            .hero-content h1 { font-size: 2.5rem; }
+            .hero-content p { font-size: 1.1rem; }
+            .info-grid, .features-grid { grid-template-columns: 1fr; }
+            .content-section h2 { font-size: 2.2rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <nav class="container">
+            <a href="index.html" class="logo">Program<span class="highlight">A2</span></a>
+            <ul class="nav-links">
+                <li><a href="index.html#beranda">Beranda</a></li>
+                <li><a href="index.html#problem">Masalah</a></li>
+                <li><a href="index.html#fitur">Fitur</a></li>
+                
+                <li><a href="login.html" class="btn btn-primary">Login</a></li>
+                </ul>
+            <div class="menu-toggle">
+                <i class="fas fa-bars"></i>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section id="beranda" class="hero">
+            <div class="hero-content">
+                <p class="hero-kicker">Solusi Pertanian Terintegrasi</p>
+                <h1>Hubungkan Petani, Kelompok Tani, dan <span class="highlight">Konsumen</span>.</h1>
+                <p>Mengurangi hasil panen terbuang melalui manajemen data real-time yang efisien.</p>
+                <a href="#fitur" class="btn btn-primary">Lihat Fitur</a>
+                <a href="#problem" class="btn btn-secondary">Pelajari Masalah</a>
+            </div>
+        </section>
+
+        <section id="problem" class="container content-section">
+            <h2>Masalah dan Solusi Kami</h2>
+            <div class="info-grid">
+                <div class="info-box problem">
+                    <h3>MASALAH: 30-35% Panen Tak Terserap</h3>
+                    <p>Tingginya angka kerugian pasca-panen ini disebabkan oleh keterlambatan informasi. Data dari petani tidak sampai dengan cepat ke kelompok tani, sehingga proses PO (Purchase Order) ke konsumen menjadi lambat dan tidak efisien.</p>
+                </div>
+                <div class="info-box solution">
+                    <h3>SOLUSI: Program A2</h3>
+                    <p>Sebuah <strong>Website Pertanian Terintegrasi</strong> untuk peningkatan kemampuan manajemen. Platform ini menjembatani alur informasi secara instan, memastikan data panen, stok, dan permintaan bertemu di satu tempat.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="fitur" class="container content-section">
+            <h2>Bagaimana Ini Bekerja?</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <i class="fas fa-tractor"></i>
+                    <h3>Dashboard Petani</h3>
+                    <p>Petani dapat dengan mudah memasukkan data ketersediaan hasil panen dan perkiraan panen secara real-time melalui HP.</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-users"></i>
+                    <h3>Panel Kelompok Tani</h3>
+                    <p>Memverifikasi data, mengelola inventaris gabungan dari semua petani, dan memproses PO yang masuk dari konsumen.</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-shopping-cart"></i>
+                    <h3>Portal Konsumen</h3>
+                    <p>Konsumen (B2B) dapat melihat ketersediaan produk, melakukan PO, dan melacak status pesanan secara transparan.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 Program A2. Dibangun untuk Pertanian Indonesia.</p>
+        </div>
+    </footer>
+
+    <script>
+        const menuToggle = document.querySelector('.menu-toggle');
+        const navLinks = document.querySelector('.nav-links');
+
+        menuToggle.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+            const icon = menuToggle.querySelector('i');
+            if (icon.classList.contains('fa-bars')) {
+                icon.classList.remove('fa-bars');
+                icon.classList.add('fa-times');
+            } else {
+                icon.classList.remove('fa-times');
+                icon.classList.add('fa-bars');
+            }
+        });
+    </script>
+</body>
+</html>

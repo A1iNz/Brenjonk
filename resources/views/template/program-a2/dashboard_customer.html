@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Konsumen - Program A2</title>
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    
+    <style>
+        /* Import Font (sama seperti halaman lain) */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        /* Variabel Warna (sama seperti halaman lain) */
+        :root {
+            --bg-dark: #1A1A1A;
+            --bg-light-dark: #2A2A2A;
+            --text-light: #F5F5F5;
+            --text-medium: #AAAAAA;
+            --accent-green: #30E0A0;
+            --accent-red: #E74C3C;
+            --accent-blue: #3498DB; /* Warna baru untuk status "Dikirim" */
+            --border-color: #3A3A3A;
+            --border-radius-modern: 16px;
+            --transition: all 0.3s ease-in-out;
+        }
+
+        /* Reset & Body (sama seperti halaman lain) */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            background-color: var(--bg-dark);
+            color: var(--text-medium);
+            /* Mencegah scroll di body, layout diatur oleh grid */
+            overflow: hidden; 
+        }
+
+        h1, h2, h3, h4, h5, h6 { color: var(--text-light); font-weight: 600; }
+
+        /* === 1. HEADER DASHBOARD (Sama seperti Petani) === */
+        .dashboard-header {
+            background-color: var(--bg-light-dark);
+            border-bottom: 1px solid var(--border-color);
+            padding: 20px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 75px; /* Tinggi tetap */
+        }
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--text-light);
+            text-decoration: none;
+        }
+        .logo .highlight { color: var(--accent-green); }
+        .user-nav {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        .user-welcome {
+            font-size: 0.95rem;
+            color: var(--text-light);
+        }
+        .user-welcome span {
+            font-weight: 600;
+            color: var(--accent-green);
+        }
+        
+        /* === 2. Tombol (Sama) === */
+        .btn {
+            display: inline-block;
+            padding: 12px 30px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            border: 2px solid transparent;
+            font-size: 1rem;
+        }
+        .btn-primary {
+            background-color: var(--accent-green);
+            color: #1A1A1A;
+        }
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 0 20px rgba(48, 224, 160, 0.4);
+        }
+        .btn-danger {
+            background-color: transparent;
+            color: var(--accent-red);
+            border: 2px solid var(--accent-red);
+            padding: 8px 20px;
+        }
+        .btn-danger:hover {
+            background-color: var(--accent-red);
+            color: var(--text-light);
+        }
+        .btn-full {
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        /* === 3. LAYOUT UTAMA (Sidebar + Konten) === */
+        .dashboard-container {
+            display: grid;
+            /* Sidebar 240px, Konten sisanya */
+            grid-template-columns: 240px 1fr; 
+            /* Tinggi total dikurangi header */
+            height: calc(100vh - 75px); 
+        }
+
+        /* === 4. SIDEBAR NAVIGASI === */
+        .sidebar {
+            background-color: var(--bg-light-dark);
+            border-right: 1px solid var(--border-color);
+            padding: 30px 20px;
+            display: flex;
+            flex-direction: column;
+        }
+        .sidebar-nav {
+            list-style: none;
+            flex-grow: 1; /* Mendorong group terakhir ke bawah */
+        }
+        .sidebar-nav li a {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            text-decoration: none;
+            color: var(--text-medium);
+            font-weight: 500;
+            border-radius: 10px;
+            margin-bottom: 5px;
+            transition: var(--transition);
+        }
+        .sidebar-nav li a:hover {
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+        }
+        /* State 'active' diatur oleh JavaScript */
+        .sidebar-nav li a.active {
+            background-color: var(--bg-dark);
+            color: var(--accent-green);
+            font-weight: 600;
+        }
+        .sidebar-nav li a i {
+            width: 20px; /* Jaga ikon tetap rapi */
+            text-align: center;
+        }
+        
+        /* === 5. KONTEN UTAMA === */
+        .main-content {
+            padding: 40px;
+            overflow-y: auto; /* KONTEN BISA DI-SCROLL */
+            height: 100%; /* Memastikan auto-scroll bekerja */
+        }
+        
+        /* Sembunyikan semua section, tampilkan via JS */
+        .content-section {
+            display: none;
+        }
+        .content-section.active {
+            display: block; /* Tampilkan section yang aktif */
+        }
+        
+        .content-section h2 {
+            font-size: 2.2rem;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        /* === 6. FITUR: MARKETPLACE === */
+        .product-grid {
+            display: grid;
+            /* Buat kolom-kolom card, min 280px, maks 1fr */
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+        }
+        .product-card {
+            background-color: var(--bg-light-dark);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-modern);
+            overflow: hidden; /* Agar gambar tidak keluar card */
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+        }
+        .product-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent-green);
+        }
+        .product-card-image {
+            height: 180px;
+            background-color: var(--bg-dark);
+            /* Placeholder jika tidak ada gambar */
+            display: grid;
+            place-items: center;
+            color: var(--text-medium);
+            font-size: 2rem;
+        }
+        /* Gunakan ini jika Anda punya gambar: */
+        /* .product-card-image img { width: 100%; height: 100%; object-fit: cover; } */
+
+        .product-card-body {
+            padding: 20px;
+            flex-grow: 1; /* Mendorong tombol ke bawah */
+            display: flex;
+            flex-direction: column;
+        }
+        .product-card-body h3 {
+            font-size: 1.4rem;
+            color: var(--text-light);
+            margin-bottom: 10px;
+        }
+        .product-price {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--accent-green);
+            margin-bottom: 5px;
+        }
+        .product-origin {
+            font-size: 0.9rem;
+            color: var(--text-medium);
+            margin-bottom: 15px;
+        }
+        .product-card-body .btn-primary {
+            margin-top: auto; /* Tombol selalu di bawah */
+        }
+
+        /* === 7. FITUR: PESANAN SAYA (TABEL) === */
+        /* Menggunakan style tabel yang sama dari dashboard_petani.html */
+        .data-table-wrapper {
+            overflow-x: auto;
+            background-color: var(--bg-light-dark);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-modern);
+        }
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+        .data-table th {
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            padding: 15px 20px;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+        }
+        .data-table td {
+            padding: 15px 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .data-table tr:last-child td {
+            border-bottom: none; /* Hapus border di baris terakhir */
+        }
+        
+        /* Status di tabel */
+        .status {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            display: inline-block;
+        }
+        .status-pending {
+            background-color: rgba(231, 76, 60, 0.1);
+            color: var(--accent-red);
+        }
+        .status-shipped {
+            background-color: rgba(52, 152, 219, 0.1);
+            color: var(--accent-blue);
+        }
+        .status-delivered {
+            background-color: rgba(48, 224, 160, 0.1);
+            color: var(--accent-green);
+        }
+        
+        /* === 8. RESPONSIVE === */
+        @media (max-width: 992px) {
+            .dashboard-container {
+                grid-template-columns: 1fr; /* Stack sidebar dan konten */
+                height: auto; /* Biarkan konten menentukan tinggi */
+                overflow: visible;
+            }
+            body { overflow: auto; } /* Kembalikan scroll ke body */
+            
+            .sidebar {
+                border-right: none;
+                border-bottom: 1px solid var(--border-color);
+                padding: 15px;
+            }
+            /* Ubah nav jadi horizontal (atau biarkan stack, tapi lebih ringkas) */
+            .sidebar-nav {
+                display: flex;
+                justify-content: center;
+                gap: 10px;
+            }
+            .sidebar-nav li a {
+                padding: 10px 15px;
+                margin-bottom: 0;
+            }
+            .sidebar-nav li a span { display: none; } /* Sembunyikan teks, sisakan ikon */
+            
+            .main-content {
+                padding: 30px 20px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .user-welcome { display: none; }
+            .content-section h2 { font-size: 1.8rem; }
+        }
+
+    </style>
+</head>
+<body>
+
+    <header class="dashboard-header">
+        <a href="dashboard_customer.html" class="logo">Program<span class="highlight">A2</span></a>
+        
+        <nav class="user-nav">
+            <div class="user-welcome">
+                Halo, <span>[Nama Konsumen]</span>
+            </div>
+            <a href="logout.php" class="btn btn-danger">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </a>
+        </nav>
+    </header>
+
+    <div class="dashboard-container">
+
+        <nav class="sidebar">
+            <ul class="sidebar-nav">
+                <li>
+                    <a href="#marketplace" class="nav-link active">
+                        <i class="fas fa-shopping-basket"></i>
+                        <span>Marketplace</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#pesanan" class="nav-link">
+                        <i class="fas fa-file-invoice-dollar"></i>
+                        <span>Pesanan Saya</span>
+                    </a>
+                </li>
+            </ul>
+            </nav>
+
+        <main class="main-content">
+            
+            <section id="marketplace" class="content-section active">
+                <h2><i class="fas fa-shopping-basket"></i> Marketplace</h2>
+                
+                <div class="product-grid">
+                    
+                    <div class="product-card">
+                        <div class="product-card-image">
+                            <i class="fas fa-carrot"></i>
+                        </div>
+                        <div class="product-card-body">
+                            <h3>Wortel Berastagi</h3>
+                            <p class="product-price">Rp 12.000 / Kg</p>
+                            <p class="product-origin">dari Kelompok Tani Maju Jaya</p>
+                            <button class="btn btn-primary btn-full">
+                                <i class="fas fa-cart-plus"></i> Tambah ke PO
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="product-card">
+                        <div class="product-card-image">
+                            <i class="fas fa-seedling"></i>
+                        </div>
+                        <div class="product-card-body">
+                            <h3>Tomat Cherry</h3>
+                            <p class="product-price">Rp 25.000 / Kg</p>
+                            <p class="product-origin">dari Petani Budi Santoso</p>
+                            <button class="btn btn-primary btn-full">
+                                <i class="fas fa-cart-plus"></i> Tambah ke PO
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="product-card">
+                        <div class="product-card-image">
+                            <i class="fas fa-pepper-hot"></i>
+                        </div>
+                        <div class="product-card-body">
+                            <h3>Cabai Rawit Merah</h3>
+                            <p class="product-price">Rp 45.000 / Kg</p>
+                            <p class="product-origin">dari Kelompok Tani Sido Makmur</p>
+                            <button class="btn btn-primary btn-full">
+                                <i class="fas fa-cart-plus"></i> Tambah ke PO
+                            </button>
+                        </div>
+                    </div>
+                    
+                    </div>
+            </section>
+            
+            <section id="pesanan" class="content-section">
+                <h2><i class="fas fa-file-invoice-dollar"></i> Pesanan Saya</h2>
+                
+                <div class="data-table-wrapper">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>ID Pesanan</th>
+                                <th>Tanggal</th>
+                                <th>Total</th>
+                                <th>Status</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>#PO-00123</td>
+                                <td>30 Okt 2025</td>
+                                <td>Rp 1.250.000</td>
+                                <td><span class="status status-delivered">Terkirim</span></td>
+                                <td><a href="#" class="btn-primary" style="padding: 5px 15px; font-size: 0.9rem;">Detail</a></td>
+                            </tr>
+                            <tr>
+                                <td>#PO-00122</td>
+                                <td>28 Okt 2025</td>
+                                <td>Rp 800.000</td>
+                                <td><span class="status status-shipped">Diproses</span></td>
+                                <td><a href="#" class="btn-primary" style="padding: 5px 15px; font-size: 0.9rem;">Detail</a></td>
+                            </tr>
+                            <tr>
+                                <td>#PO-00121</td>
+                                <td>25 Okt 2025</td>
+                                <td>Rp 5.200.000</td>
+                                <td><span class="status status-pending">Menunggu Pembayaran</span></td>
+                                <td><a href="#" class="btn-primary" style="padding: 5px 15px; font-size: 0.9rem;">Detail</a></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <script>
+        // Script sederhana untuk mengurus navigasi sidebar
+        
+        // 1. Ambil semua link navigasi
+        const navLinks = document.querySelectorAll('.nav-link');
+        
+        // 2. Ambil semua bagian konten
+        const contentSections = document.querySelectorAll('.content-section');
+        
+        // 3. Tambahkan event listener untuk setiap link
+        navLinks.forEach(link => {
+            link.addEventListener('click', (event) => {
+                event.preventDefault(); // Hentikan pindah halaman
+                
+                const targetId = link.getAttribute('href'); // Dapatkan target (mis: '#pesanan')
+                
+                // 4. Hapus 'active' dari semua link dan section
+                navLinks.forEach(nav => nav.classList.remove('active'));
+                contentSections.forEach(sec => sec.classList.remove('active'));
+                
+                // 5. Tambahkan 'active' ke link yang diklik
+                link.classList.add('active');
+                
+                // 6. Tampilkan section yang sesuai dengan target
+                document.querySelector(targetId).classList.add('active');
+            });
+        });
+    </script>
+
+</body>
+</html>
