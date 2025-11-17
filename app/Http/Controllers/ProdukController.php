@@ -33,13 +33,6 @@ class ProdukController extends Controller
                          ->with('success', 'Produk berhasil ditambahkan.');
     }
     
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Produk $produk)
-    {
-        return view('produk.edit', compact('produk'));
-    }
 
     /**
      * Update the specified resource in storage.

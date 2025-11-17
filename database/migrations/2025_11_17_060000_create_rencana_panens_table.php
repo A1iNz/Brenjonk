@@ -14,7 +14,7 @@ return new class extends Migration
             $table->foreignId('produk_id')->constrained('produks')->onDelete('cascade');
             $table->decimal('estimasi_hasil_panen', 8, 2);
             $table->date('estimasi_waktu_panen');
-            $table->string('status')->default('menunggu_verifikasi'); // cth: menunggu_verifikasi, disetujui, ditolak
+            $table->enum('status', ['pending', 'approved', 'reject'])->default('pending'); // cth: pending, approved, reject
             $table->timestamps();
         });
     }

@@ -35,7 +35,7 @@ Route::middleware('auth')->group(function () {
 Route::middleware('auth')->group(function () {
     Route::get('/validasi', [ValidasiController::class, 'index'])->name('validasi');
     // Route::get('/validasi', [ValidasiController::class, 'edit'])->name('validasi.edit');
-    Route::patch('/validasi', [ValidasiController::class, 'update'])->name('validasi.update');
+    Route::patch('/validasi/{id}', [ValidasiController::class, 'update'])->name('validasi.update');
     Route::delete('/validasi', [ValidasiController::class, 'destroy'])->name('validasi.destroy');
 });
 Route::middleware('auth')->group(function () {
@@ -57,16 +57,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/admin/produk', [ProdukController::class, 'index'])->name('produk');
     Route::get('/admin/produk/create', [ProdukController::class, 'create'])->name('produk.create');
     Route::post('/admin/produk/store', [ProdukController::class, 'store'])->name('produk.store');
-    Route::get('/admin/produk/{id}', [ProdukController::class, 'edit'])->name('produk.edit');
-    Route::patch('/admin/produk/{id}', [ProdukController::class, 'update'])->name('produk.update');
-    Route::delete('/admin/produk/{id}', [ProdukController::class, 'destroy'])->name('produk.destroy');
-
-    Route::get('/admin/kategori', [KategoriController::class, 'index'])->name('kategori');
-    Route::get('/admin/kategori/create', [KategoriController::class, 'create'])->name('kategori.create');
-    Route::post('/admin/kategori/store', [KategoriController::class, 'store'])->name('kategori.store');
-    Route::get('/admin/kategori/{id}', [KategoriController::class, 'edit'])->name('kategori.edit');
-    Route::patch('/admin/kategori/{id}', [KategoriController::class, 'update'])->name('kategori.update');
-    Route::delete('/admin/kategori/{id}', [KategoriController::class, 'destroy'])->name('kategori.destroy');
+    Route::patch('/admin/produk/{produk}', [ProdukController::class, 'update'])->name('produk.update');
+    Route::delete('/admin/produk/{produk}', [ProdukController::class, 'destroy'])->name('produk.destroy');
 });
 
 require __DIR__.'/auth.php';

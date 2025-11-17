@@ -25,11 +25,11 @@
                         @method('PATCH')
                         <div class="mb-3">
                             <label for="name" class="form-label">Username</label>
-                            <input type="text" class="form-control rounded-md" id="name" name="name" value="{{ old('name', $petani->user->name) }}" required>
+                            <input type="text" class="form-control rounded-md" id="name" name="name" value="{{ old('name', $petani->name) }}" required>
                         </div>
                         <div class="mb-3">
                             <label for="nama_lngkp" class="form-label">Nama Lengkap</label>
-                            <input type="text" class="form-control rounded-md" id="nama_lngkp" name="nama_lngkp" value="{{ old('nama_lngkp', $petani->nama) }}" required>
+                            <input type="text" class="form-control rounded-md" id="nama_lngkp" name="nama_lngkp" value="{{ old('nama_lngkp', $petani->nama_lngkp) }}" required>
                         </div>
                         <div class="mb-3">
                             <label for="password" class="form-label">Password Baru (Opsional)</label>

@@ -12,6 +12,7 @@ class RencanaPanenController extends Controller
      */
     public function store(Request $request)
     {
+        // dd($request->estimasi_hasil);
         // 1. Validasi input dari form
         $request->validate([
             'produk_id' => 'required|exists:produks,id',
@@ -28,7 +29,7 @@ class RencanaPanenController extends Controller
             'produk_id' => $request->produk_id,
             'estimasi_hasil_panen' => $request->estimasi_hasil,
             'estimasi_waktu_panen' => $request->estimasi_waktu,
-            'status' => 'menunggu_verifikasi', // Status awal
+            'status' => 'pending', // Status awal
         ]);
 
         // 4. Redirect kembali dengan pesan sukses

@@ -20,6 +20,13 @@
                         </div>
                     @endif
 
+                    @if (session('error'))
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            {{ session('error') }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    @endif
+
                     @if ($errors->any())
                         <div class="alert alert-danger">
                             <strong>Whoops!</strong> Ada beberapa masalah dengan input Anda.<br><br>
@@ -47,12 +54,17 @@
                                         <th scope="row">{{ $loop->iteration }}</th>
                                         <td>{{ $produk->nama }}</td>
                                         <td>{{ $produk->kode }}</td>
-                                        <td>
-                                            <form onsubmit="return confirm('Apakah Anda yakin ingin menghapus produk ini?');" action="{{ route('produk.destroy', $produk->id) }}" method="POST">
-                                                <a href="{{ route('produk.edit', $produk->id) }}" class="btn btn-sm btn-warning"><i class="fa-solid fa-pen-to-square"></i>Edit</a>
+                                        {{-- Tombol Aksi --}}
+                                        <td class="d-flex justify-content-center gap-2">
+                                            {{-- Tombol Edit (Modal Trigger) --}}
+                                            <button type="button" class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#editProdukModal-{{ $produk->id }}">
+                                                <i class="fa-solid fa-pen-to-square"></i> Edit
+                                            </button>
+                                            {{-- Form Hapus --}}
+                                            <form class="d-inline" onsubmit="return confirm('Apakah Anda yakin ingin menghapus produk ini?');" action="{{ route('produk.destroy', $produk->id) }}" method="POST">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="submit" class="btn btn-sm btn-danger"><i class="fa-solid fa-trash"></i>Hapus</button>
+                                                <button type="submit" class="btn btn-sm btn-danger"><i class="fa-solid fa-trash"></i> Hapus</button>
                                             </form>
                                         </td>
                                     </tr>
@@ -68,6 +80,38 @@
                             </tbody>
                         </table>
                     </div>
+
+                    {{-- Modal Edit Produk (dipindahkan ke luar tabel) --}}
+                    @foreach ($produks as $produk)
+                        <div class="modal fade" id="editProdukModal-{{ $produk->id }}" tabindex="-1" aria-labelledby="editProdukModalLabel-{{ $produk->id }}" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content bg-dark text-light">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="editProdukModalLabel-{{ $produk->id }}">Edit Produk</h5>
+                                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <form action="{{ route('produk.update', $produk->id) }}" method="POST">
+                                        @csrf
+                                        @method('PATCH')
+                                        <div class="modal-body text-start">
+                                            <div class="mb-3">
+                                                <label for="nama-{{ $produk->id }}" class="form-label">Nama Produk</label>
+                                                <input type="text" class="form-control rounded-md" id="nama-{{ $produk->id }}" name="nama" value="{{ old('nama', $produk->nama) }}" required>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="kode-{{ $produk->id }}" class="form-label">Kode Produk</label>
+                                                <input type="text" class="form-control rounded-md" id="kode-{{ $produk->id }}" name="kode" value="{{ old('kode', $produk->kode) }}" required>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                                            <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
                 </div>
             </div>
         </div>
@@ -102,6 +146,7 @@
         </div>
     </div>
 </div>
+
 @endsection
 
 @push('scripts')
@@ -115,10 +160,3 @@
     @endif
 </script>
 @endpush
-
-{{-- Pastikan layout app.blade.php Anda memiliki @stack('scripts') sebelum tag </body> --}}
-{{-- Contoh di layouts/app.blade.php: --}}
-{{-- ... --}}
-{{-- <script src="..."></script> --}}
-{{-- @stack('scripts') --}}
-{{-- </body> --}}

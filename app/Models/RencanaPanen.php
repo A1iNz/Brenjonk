@@ -16,4 +16,14 @@ class RencanaPanen extends Model
         'estimasi_waktu_panen',
         'status',
     ];
+
+    public function produk()
+    {
+        return $this->belongsTo(Produk::class);
+    }
+
+    public function petani()
+    {
+        return $this->belongsTo(Petani::class);
+    }
 }
