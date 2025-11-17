@@ -11,36 +11,43 @@ class DashboardController extends Controller
 {
     /**
      * Handle the incoming request.
+     * Mengambil data untuk Dashboard, menyesuaikan berdasarkan role user.
      */
     public function __invoke(Request $request)
     {
         $user = Auth::user();
+        $userId = $user->id;
         
-        $produks = Produk::all();
-        $panens = RencanaPanen::all();
-        $jumlahProdukTerdaftar = $produks->count();
-        $jumlahPending = $panens->where('status', 'pending')->count();
-        $jumlahApproved = $panens->where('status', 'approved')->count();
-        
+        // Data Global untuk Statistik dan Form Lapor Panen
+        $jumlahProdukTerdaftar = Produk::count(); 
+        $produks = Produk::all(); // Untuk dropdown di form lapor
+
         if ($user->role === 'admin') {
-            // Admin akan melihat konten dari yield('content') di app.blade.php
-            return view('layouts.app');
+            // Logika untuk Admin (Melihat Semua Data)
+            $jumlahPending = RencanaPanen::where('status', 'pending')->count();
+            $jumlahApproved = RencanaPanen::where('status', 'approved')->count();
+            
+            // Riwayat panen yang ditampilkan (Untuk Admin, bisa melihat semua panen)
+            $panens = RencanaPanen::with('produk')->orderBy('created_at', 'desc')->limit(10)->get();
+
+        } else {
+            // Logika untuk Petani (Hanya melihat data miliknya)
+            $jumlahPending = RencanaPanen::where('petani_id', $userId)->where('status', 'pending')->count();
+            $jumlahApproved = RencanaPanen::where('petani_id', $userId)->where('status', 'approved')->count();
+
+            // Riwayat panen petani yang sedang login
+            $panens = RencanaPanen::where('petani_id', $userId)
+                                ->with('produk')
+                                ->orderBy('created_at', 'desc')
+                                ->get();
         }
 
-        if ($user->role === 'petani') {
-            $produks = Produk::orderBy('nama')->get();
-            $panens = collect(); // Default to an empty collection
-
-            // Pastikan user adalah petani dan memiliki relasi petani
-            if ($user->role === 'petani' && $user->petani) {
-                // Ambil data rencana panen milik petani yang sedang login
-                // Urutkan berdasarkan yang terbaru dan eager load relasi produk
-                $panens = RencanaPanen::where('petani_id', $user->petani->id)
-                    ->with('produk')
-                    ->latest('created_at')->get();
-            }
-            return view('dashboard', compact('produks', 'panens', 'jumlahProdukTerdaftar', 'jumlahPending', 'jumlahApproved'));
-        }
-        return view('dashboard');
+        return view('dashboard', compact(
+            'jumlahProdukTerdaftar',
+            'jumlahPending',
+            'jumlahApproved',
+            'produks',
+            'panens'
+        ));
     }
 }
