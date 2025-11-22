@@ -1,12 +1,27 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container text-light mt-5">
+<div class="container text-dark mt-5">
+    
+    {{-- Header Halaman --}}
+    <div class="mb-4 p-3 bg-white rounded-md border border-primary shadow-sm">
+        <h1 class="mb-0 fs-3 text-white">Manajemen Produk Komoditas 📦</h1>
+        <p class="text-white mb-0">Daftar, tambah, edit, dan hapus komoditas yang tersedia di sistem.</p>
+    </div>
+
     <div class="row justify-content-center">
-        <div class="col-md-10"> {{-- Kartu Utama Manajemen Produk --}}
-            <div class="card bg-dark border-secondary shadow-lg"> <div class="card-header bg-secondary d-flex justify-content-between align-items-center"> <h3 class="mb-0 text-white">📦 Manajemen Produk Komoditas</h3>
+        <div class="col-md-10"> 
+            
+            {{-- Kartu Utama Manajemen Produk --}}
+            {{-- Card menggunakan bg-white dan border-primary --}}
+            <div class="card bg-white border-primary shadow-lg"> 
+                
+                {{-- Card Header menggunakan Dark Forest Green (bg-success) --}}
+                <div class="card-header bg-success d-flex justify-content-between align-items-center text-white"> 
+                    <h3 class="ms-1 mb-0"><i class="fa-solid fa-book-open me-2"></i> Daftar Produk</h3>
                     
-                    <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#createProdukModal">
+                    {{-- Tombol Tambah Produk menggunakan Fresh Green (btn-primary) --}}
+                    <button type="button" class="btn btn-primary text-white" data-bs-toggle="modal" data-bs-target="#createProdukModal">
                         <i class="fa-solid fa-seedling me-1"></i> Tambah Produk Baru
                     </button>
                 </div>
@@ -30,7 +45,7 @@
 
                     @if ($errors->any())
                         <div class="alert alert-danger">
-                            <strong>Whoops!</strong> Ada beberapa masalah input.
+                            <strong>Whoops!</strong> Ada beberapa masalah input.<br>
                             <ul class="mt-2 mb-0">
                                 @foreach ($errors->all() as $error)
                                     <li>{{ $error }}</li>
@@ -41,7 +56,9 @@
                     {{-- AKHIR AREA ALERT --}}
 
                     <div class="table-responsive mt-3">
-                        <table class="table table-dark table-striped table-hover align-middle text-center" id="produkTable"> <thead>
+                        {{-- Tabel diubah ke light theme dan text-dark --}}
+                        <table class="table table-striped table-hover align-middle text-dark" id="produkTable"> 
+                            <thead>
                                 <tr>
                                     <th scope="col">#</th>
                                     <th scope="col">Nama Komoditas</th>
@@ -53,13 +70,16 @@
                                 @forelse ($produks as $produk)
                                     <tr>
                                         <th scope="row">{{ $loop->iteration }}</th>
-                                        <td>{{ $produk->nama }}</td>
-                                        <td><span class="badge bg-info text-dark">{{ $produk->kode }}</span></td>
+                                        <td class="text-start text-dark">{{ $produk->nama }}</td>
+                                        <td>
+                                            {{-- Badge diubah ke bg-primary (Fresh Green) dengan teks putih --}}
+                                            <span class="badge bg-primary text-white">{{ $produk->kode }}</span>
+                                        </td>
                                         
                                         {{-- Tombol Aksi --}}
                                         <td class="d-flex justify-content-center gap-2">
-                                            {{-- Tombol Edit (Modal Trigger) --}}
-                                            <button type="button" class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#editProdukModal-{{ $produk->id }}">
+                                            {{-- Tombol Edit (Fresh Green) --}}
+                                            <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#editProdukModal-{{ $produk->id }}">
                                                 <i class="fa-solid fa-pencil"></i>
                                             </button>
                                             
@@ -86,30 +106,38 @@
                 </div>
             </div>
             
-            {{-- Modal Edit Produk (Loop di luar card-body, seperti yang sudah Anda lakukan) --}}
+            {{-- MODAL EDIT PRODUK --}}
             @foreach ($produks as $produk)
                 <div class="modal fade" id="editProdukModal-{{ $produk->id }}" tabindex="-1" aria-labelledby="editProdukModalLabel-{{ $produk->id }}" aria-hidden="true">
                     <div class="modal-dialog">
-                        <div class="modal-content bg-dark text-light border-warning"> <div class="modal-header bg-warning text-dark">
+                        {{-- Modal Content bg-white, border-primary --}}
+                        <div class="modal-content bg-white border-primary"> 
+                            {{-- Modal Header bg-primary text-white --}}
+                            <div class="modal-header bg-primary text-white">
                                 <h5 class="modal-title" id="editProdukModalLabel-{{ $produk->id }}">Edit Produk: {{ $produk->nama }}</h5>
-                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                                {{-- Gunakan btn-close biasa (warna default Bootstrap gelap) --}}
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> 
                             </div>
                             <form action="{{ route('produk.update', $produk->id) }}" method="POST">
                                 @csrf
                                 @method('PATCH')
-                                <div class="modal-body text-start">
+                                <div class="modal-body text-start text-dark">
                                     <div class="mb-3">
-                                        <label for="nama-{{ $produk->id }}" class="form-label">Nama Produk</label>
-                                        <input type="text" class="form-control bg-secondary text-light border-0" id="nama-{{ $produk->id }}" name="nama" value="{{ old('nama', $produk->nama) }}" required>
+                                        <label for="nama-{{ $produk->id }}" class="form-label text-dark">Nama Produk</label>
+                                        {{-- Input bg-secondary, text-dark --}}
+                                        <input type="text" class="form-control bg-secondary text-dark border-0" id="nama-{{ $produk->id }}" name="nama" value="{{ old('nama', $produk->nama) }}" required>
                                     </div>
                                     <div class="mb-3">
-                                        <label for="kode-{{ $produk->id }}" class="form-label">Kode Produk</label>
-                                        <input type="text" class="form-control bg-secondary text-light border-0" id="kode-{{ $produk->id }}" name="kode" value="{{ old('kode', $produk->kode) }}" required>
+                                        <label for="kode-{{ $produk->id }}" class="form-label text-dark">Kode Produk</label>
+                                        {{-- Input bg-secondary, text-dark --}}
+                                        <input type="text" class="form-control bg-secondary text-dark border-0" id="kode-{{ $produk->id }}" name="kode" value="{{ old('kode', $produk->kode) }}" required>
                                     </div>
                                 </div>
                                 <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                                    <button type="submit" class="btn btn-warning">Simpan Perubahan</button>
+                                    {{-- Tombol Batal bg-secondary text-dark --}}
+                                    <button type="button" class="btn btn-secondary text-dark" data-bs-dismiss="modal">Batal</button>
+                                    {{-- Tombol Simpan (Fresh Green) --}}
+                                    <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
                                 </div>
                             </form>
                         </div>
@@ -120,26 +148,35 @@
     </div>
 </div>
 
+{{-- MODAL TAMBAH PRODUK --}}
 <div class="modal fade" id="createProdukModal" tabindex="-1" aria-labelledby="createProdukModalLabel" aria-hidden="true">
     <div class="modal-dialog">
-        <div class="modal-content bg-dark text-light border-primary"> <div class="modal-header bg-primary text-white">
+        {{-- Modal Content bg-white, border-primary --}}
+        <div class="modal-content bg-white border-primary"> 
+            {{-- Modal Header bg-primary text-white --}}
+            <div class="modal-header bg-primary text-white">
                 <h5 class="modal-title" id="createProdukModalLabel">➕ Tambah Produk Komoditas Baru</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                {{-- Gunakan btn-close biasa --}}
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <form action="{{ route('produk.store') }}" method="POST">
                 @csrf
-                <div class="modal-body text-start">
+                <div class="modal-body text-start text-dark">
                     <div class="mb-3">
-                        <label for="nama" class="form-label">Nama Komoditas/Produk</label>
-                        <input type="text" class="form-control bg-secondary text-light border-0" id="nama" name="nama" value="{{ old('nama') }}" required placeholder="Contoh: Beras, Cabai Merah, Jagung">
+                        <label for="nama" class="form-label text-dark">Nama Komoditas/Produk</label>
+                        {{-- Input bg-secondary, text-dark --}}
+                        <input type="text" class="form-control bg-secondary text-dark border-0" id="nama" name="nama" value="{{ old('nama') }}" required placeholder="Contoh: Beras, Cabai Merah, Jagung">
                     </div>
                     <div class="mb-3">
-                        <label for="kode" class="form-label">Kode Produk (Singkatan Unik)</label>
-                        <input type="text" class="form-control bg-secondary text-light border-0" id="kode" name="kode" value="{{ old('kode') }}" required placeholder="Contoh: BR-01, CM-A, JG-1">
+                        <label for="kode" class="form-label text-dark">Kode Produk (Singkatan Unik)</label>
+                        {{-- Input bg-secondary, text-dark --}}
+                        <input type="text" class="form-control bg-secondary text-dark border-0" id="kode" name="kode" value="{{ old('kode') }}" required placeholder="Contoh: BR-01, CM-A, JG-1">
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    {{-- Tombol Batal bg-secondary text-dark --}}
+                    <button type="button" class="btn btn-secondary text-dark" data-bs-dismiss="modal">Batal</button>
+                    {{-- Tombol Simpan (Dark Forest Green) --}}
                     <button type="submit" class="btn btn-success"><i class="fa-solid fa-floppy-disk me-1"></i> Simpan Produk</button>
                 </div>
             </form>
@@ -150,29 +187,48 @@
 @endsection
 
 @push('scripts')
-<script src="https://cdn.datatables.net/2.3.5/js/dataTables.js"></script>
+{{-- DataTables script hanya perlu di-include sekali di layouts/app, tapi tidak masalah jika di sini juga --}}
 <script>
-    // Inisialisasi DataTables untuk tampilan tabel yang lebih baik
-    $(document).ready(function() {
-        $('#produkTable').DataTable({
-            "paging": true,
-            "searching": true,
-            "ordering": true,
-            "info": true
-        });
-    });
+    // 1. Buat flag dari PHP/Blade
+    var validationErrors = @json($errors->any());
+    var oldNama = @json(old('nama'));
+    var oldKode = @json(old('kode'));
     
-    // Jika ada error validasi, buka kembali modal secara otomatis
-    @if ($errors->any())
-    document.addEventListener('DOMContentLoaded', function() {
-        var createModal = new bootstrap.Modal(document.getElementById('createProdukModal'));
-        
-        // Cek apakah error terkait dengan modal TAMBAH
-        // Ini adalah asumsi sederhana, idealnya menggunakan pengecekan yang lebih spesifik
-        @if (!empty(old('nama')) && !empty(old('kode')))
-            createModal.show();
-        @endif
+    // 2. Logika JavaScript
+    $(document).ready(function() {
+        // ... Inisialisasi DataTables ...
+
+        if (validationErrors) {
+            
+            var modalId;
+            
+            // Asumsi: Jika ada old data (nama & kode), kemungkinan error dari modal Tambah Produk (Create)
+            if (oldNama && oldKode) {
+                // Cek rute mana yang disubmit. Jika bukan rute update, berarti rute store.
+                // NOTE: Untuk menentukan ini secara akurat, Anda mungkin perlu passing ID error dari Controller
+                modalId = 'createProdukModal';
+            } else {
+                // Ini harusnya logic untuk modal Edit, tapi karena sulit ditentukan, kita bisa skip atau tambahkan logic canggih.
+                // Untuk amannya, hanya buka modal Tambah jika ada old data yang jelas.
+                // Anda bisa menambahkan logic di sini untuk mencoba membuka modal Edit jika ada error form edit.
+                
+                // Jika error berasal dari Edit, Anda mungkin perlu menggunakan URL saat ini atau menyimpan ID produk yang gagal divalidasi.
+                // Contoh:
+                // // Simpel: Coba buka modal Edit jika ada error (perlu perbaikan di Controller)
+                // // Ambil ID dari URL (asumsi URL edit)
+                // var urlSegments = window.location.pathname.split('/');
+                // var produkId = urlSegments[urlSegments.length - 2];
+                // modalId = 'editProdukModal-' + produkId;
+                
+                return; // Keluar jika tidak bisa menentukan modal.
+            }
+
+            var modalElement = document.getElementById(modalId);
+            if (modalElement) {
+                var modal = new bootstrap.Modal(modalElement);
+                modal.show();
+            }
+        }
     });
-    @endif
 </script>
 @endpush

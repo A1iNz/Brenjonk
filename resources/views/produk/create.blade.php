@@ -1,16 +1,26 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container text-light mt-5">
+<div class="container text-dark mt-5">
+    
+    {{-- Header Halaman --}}
+    <div class="mb-4 p-3 bg-white rounded-md border border-primary shadow-sm">
+        <h1 class="mb-0 fs-3 text-dark">Tambah Komoditas Baru ➕</h1>
+        <p class="text-muted">Isi formulir di bawah untuk mendaftarkan produk komoditas baru ke dalam sistem.</p>
+    </div>
+
     <div class="row justify-content-center">
         <div class="col-md-7"> 
             
             {{-- Kartu Utama Form --}}
-            <div class="card bg-dark border-primary shadow-lg"> 
+            {{-- Card menggunakan bg-white dan border-primary --}}
+            <div class="card bg-white border-primary shadow-lg"> 
                 
+                {{-- Card Header menggunakan Fresh Green (bg-primary) --}}
                 <div class="card-header bg-primary d-flex justify-content-between align-items-center text-white">
-                    <h3 class="mb-0">➕ Tambah Komoditas Baru</h3>
-                    <a href="{{ route('produk') }}" class="btn btn-sm btn-light">
+                    <h3 class="mb-0"><i class="fa-solid fa-circle-plus me-2"></i> Form Tambah Komoditas Baru</h3>
+                    {{-- Tombol Kembali menggunakan Dark Forest Green (btn-success) --}}
+                    <a href="{{ route('produk') }}" class="btn btn-sm btn-success text-white">
                         <i class="fa-solid fa-arrow-left me-1"></i> Kembali ke Daftar
                     </a>
                 </div>
@@ -34,10 +44,12 @@
                         @csrf
                         
                         <div class="mb-4">
-                            <label for="nama" class="form-label text-white">Nama Komoditas/Produk</label>
+                            {{-- Label text-dark --}}
+                            <label for="nama" class="form-label text-dark">Nama Komoditas/Produk</label>
                             <input 
                                 type="text" 
-                                class="form-control rounded-md bg-secondary text-light border-0 @error('nama') is-invalid @enderror" 
+                                {{-- Input bg-secondary (Putih Pudar) dan text-dark --}}
+                                class="form-control rounded-md bg-secondary text-dark border-0 @error('nama') is-invalid @enderror" 
                                 id="nama" 
                                 name="nama" 
                                 value="{{ old('nama') }}" 
@@ -52,10 +64,11 @@
                         </div>
                         
                         <div class="mb-4">
-                            <label for="kode" class="form-label text-white">Kode Produk (Singkatan Unik)</label>
+                            <label for="kode" class="form-label text-dark">Kode Produk (Singkatan Unik)</label>
                             <input 
                                 type="text"
-                                class="form-control rounded-md bg-secondary text-light border-0 @error('kode') is-invalid @enderror" 
+                                {{-- Input bg-secondary (Putih Pudar) dan text-dark --}}
+                                class="form-control rounded-md bg-secondary text-dark border-0 @error('kode') is-invalid @enderror" 
                                 id="kode" 
                                 name="kode" 
                                 value="{{ old('kode') }}" 
@@ -70,7 +83,8 @@
                         </div>
 
                         <div class="d-grid gap-2 mt-4">
-                            <button type="submit" class="btn btn-lg btn-success">
+                            {{-- Tombol Simpan menggunakan Dark Forest Green (btn-success) --}}
+                            <button type="submit" class="btn btn-lg btn-success text-white fw-bold">
                                 <i class="fa-solid fa-floppy-disk me-2"></i> Simpan Produk Baru
                             </button>
                         </div>
